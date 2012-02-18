@@ -27,7 +27,8 @@ public class QunitAdapter {
 	private String baseUrl;
 	private FileServer server;
 	private File[] files;
-	private String path;
+	private String serverRoot;
+	private String targetRoot;
 	private HtmlUnitDriver hud;
 	private StringBuffer verificationErrors = new StringBuffer();
 
@@ -35,15 +36,16 @@ public class QunitAdapter {
 	public void setUp() throws Exception {
 		ResourceBundle bundle = ResourceBundle.getBundle("application");
 		Integer port = Integer.valueOf(bundle.getString("test.port"));
-		
-		path = bundle.getString("test.path");
+
+		serverRoot = bundle.getString("test.server.root");
+		targetRoot = bundle.getString("test.target.root");
 		baseUrl = "http://localhost:" + port + "/";
 
-		server = new FileServer(port, path);
+		server = new FileServer(port, serverRoot);
 		server.start();
 
 		FileSearch search = new FileSearch();
-		files = search.listFiles(path, bundle.getString("test.file"),
+		files = search.listFiles(targetRoot, bundle.getString("test.file"),
 				bundle.getString("test.match"));
 
 		drivers = new HashMap<String, WebDriver>();
@@ -85,7 +87,7 @@ public class QunitAdapter {
 	public void testQunit() throws Exception {
 		for (File file : files) {
 			if( file == null ) continue;
-			String url = baseUrl + file.getAbsolutePath().replace(path, "").replace("\\","/");
+			String url = baseUrl + file.getAbsolutePath().replace(serverRoot, "").replace("\\","/");
 			hud.get(url);
 			String title = hud.getTitle();
 			System.out.println(url);
