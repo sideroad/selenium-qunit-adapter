@@ -85,7 +85,7 @@ public class QunitAdapter {
 	public void testQunit() throws Exception {
 		for (File file : files) {
 			if( file == null ) continue;
-			String url = baseUrl + file.getAbsolutePath().replace(path, "");
+			String url = baseUrl + file.getAbsolutePath().replace(path, "").replace("\\","/");
 			hud.get(url);
 			String title = hud.getTitle();
 			System.out.println(url);
